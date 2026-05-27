@@ -3,7 +3,8 @@
 ### It's time to move on to bigger things.
 ### I am no longer working on this project and decided to prioritize different things in life.
 ### I am not archiving this repo to make sure all links and references still work with no changes.
-### As always, feel free to fork uhara and work from there if you wish to do so.   
+### As always, feel free to fork uhara and work from there if you wish to do so.
+### PEACE   
 <img width="184" height="184" alt="c6f1804fb1fdafa5c35c93f870105bb747f9cbd7_full" src="https://github.com/user-attachments/assets/1d38cd77-0dd1-4f5f-9d64-f165e9c88457" />
 
 
