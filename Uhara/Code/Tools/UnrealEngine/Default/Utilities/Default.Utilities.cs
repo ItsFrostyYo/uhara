@@ -14,6 +14,8 @@ public partial class Tools
 			{
 				internal static string DebugClass = "Utilities";
 				internal static string ToolUniqueID = "UCyEljVfhjUoJhDU";
+				private static readonly object initLock = new object();
+				private static string initializedProcessToken;
 
 				private DataRetriever dataRetriever;
 				private TextReader textReader;
@@ -94,6 +96,86 @@ public partial class Tools
                     try
                     {
                         return textReader.FNameToShortString2(fName);
+                    }
+                    catch { }
+                    return null;
+                }
+
+                public IntPtr UObjectClass(object uObject)
+                {
+                    try
+                    {
+                        ulong address = ToAddress(uObject);
+                        if (address == 0) return IntPtr.Zero;
+
+                        return (IntPtr)TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + 0x10);
+                    }
+                    catch { }
+                    return IntPtr.Zero;
+                }
+
+                public IntPtr UObjectOuter(object uObject)
+                {
+                    try
+                    {
+                        ulong address = ToAddress(uObject);
+                        if (address == 0) return IntPtr.Zero;
+
+                        return (IntPtr)TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + 0x20);
+                    }
+                    catch { }
+                    return IntPtr.Zero;
+                }
+
+                public string UObjectName(object uObject)
+                {
+                    try
+                    {
+                        ulong address = ToAddress(uObject);
+                        if (address == 0) return null;
+
+                        ulong fName = TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + 0x18);
+                        return FNameToString(fName);
+                    }
+                    catch { }
+                    return null;
+                }
+
+                public string UObjectShortName(object uObject)
+                {
+                    try
+                    {
+                        ulong address = ToAddress(uObject);
+                        if (address == 0) return null;
+
+                        ulong fName = TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + 0x18);
+                        return FNameToShortString(fName);
+                    }
+                    catch { }
+                    return null;
+                }
+
+                public string UObjectClassName(object uObject)
+                {
+                    try
+                    {
+                        IntPtr classPtr = UObjectClass(uObject);
+                        if (classPtr == IntPtr.Zero) return null;
+
+                        return UObjectShortName(classPtr);
+                    }
+                    catch { }
+                    return null;
+                }
+
+                public string UObjectOuterName(object uObject)
+                {
+                    try
+                    {
+                        IntPtr outerPtr = UObjectOuter(uObject);
+                        if (outerPtr == IntPtr.Zero) return null;
+
+                        return UObjectShortName(outerPtr);
                     }
                     catch { }
                     return null;
@@ -195,13 +277,36 @@ public partial class Tools
 					ulong modBase = TProcess.GetModuleBase(Main.ProcessInstance);
 					if (modBase == 0) throw new Exception();
 
-					// ---
-					MemoryManager.ClearMemory(ToolUniqueID);
+					string processToken = TProcess.GetToken(Main.ProcessInstance) ?? string.Empty;
+					lock (initLock)
+					{
+						if (initializedProcessToken != processToken)
+						{
+							MemoryManager.ClearMemory(ToolUniqueID);
+							initializedProcessToken = processToken;
+						}
+					}
 
 					// ---
                     dataRetriever = new DataRetriever();
                     textReader = new TextReader();
                     fpsLocker = new FpsLocker();
+                }
+
+                private static ulong ToAddress(object value)
+                {
+                    try
+                    {
+                        if (value == null) return 0;
+                        if (value is IntPtr intPtr) return (ulong)intPtr.ToInt64();
+                        if (value is UIntPtr uintPtr) return uintPtr.ToUInt64();
+                        if (value is ulong ulongValue) return ulongValue;
+                        if (value is long longValue) return (ulong)longValue;
+                        if (value is uint uintValue) return uintValue;
+                        if (value is int intValue) return (ulong)intValue;
+                    }
+                    catch { }
+                    return 0;
                 }
 			}
 		}

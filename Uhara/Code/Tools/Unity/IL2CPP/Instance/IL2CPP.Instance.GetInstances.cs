@@ -257,8 +257,8 @@ public partial class Tools
                                 do
                                 {
                                     ulong function = TMemory.ScanSingle(Main.ProcessInstance, "8B ?? ?? 03 00 00 8D ?? FF A9 FA FF FF FF 75 05", "UnityPlayer.dll", 0x20);
-                                    if (function == 0) TMemory.ScanSingle(Main.ProcessInstance, "8B ?? ?? 04 00 00 8D ?? FF A9 FA FF FF FF 75 05", "UnityPlayer.dll", 0x20);
-                                    if (function == 0) TMemory.ScanSingle(Main.ProcessInstance, "8B ?? ?? 03 00 00 FF ?? A9 FB FF FF FF 74 ?? 48", "UnityPlayer.dll", 0x20);
+                                    if (function == 0) function = TMemory.ScanSingle(Main.ProcessInstance, "8B ?? ?? 04 00 00 8D ?? FF A9 FA FF FF FF 75 05", "UnityPlayer.dll", 0x20);
+                                    if (function == 0) function = TMemory.ScanSingle(Main.ProcessInstance, "8B ?? ?? 03 00 00 FF ?? A9 FB FF FF FF 74 ?? 48", "UnityPlayer.dll", 0x20);
                                     if (function == 0) break;
 
                                     // ---

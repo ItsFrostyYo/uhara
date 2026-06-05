@@ -117,6 +117,7 @@
     <Compile Include="Code\Tools\UnrealEngine\Default\Events\Default.Events.InstanceCreation.cs" />
     <Compile Include="Code\Tools\UnrealEngine\Default\Utilities\Default.Utilities.FpsLocker.cs" />
     <Compile Include="Code\Tools\UnrealEngine\UnrealEngine.cs" />
+    <Compile Include="Code\Tools\UnrealEngine\Subnautica2\Subnautica2.cs" />
     <Compile Include="Code\Utils\Array.cs" />
     <Compile Include="Code\Utils\DynamicVars.cs" />
     <Compile Include="Code\Utils\Imports.cs" />
@@ -148,6 +149,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <Nullable>disable</Nullable>
-    <PostBuildEvent>call "$(TargetDir)post_build.bat"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

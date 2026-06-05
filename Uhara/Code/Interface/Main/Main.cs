@@ -118,12 +118,32 @@ public partial class Main
         }
     }
 
+    private dynamic _uharaSN2Tool;
+    private dynamic uharaSN2Tool
+    {
+        get
+        {
+            if (_uharaSN2Tool == null) _uharaSN2Tool = CreateTool("UnrealEngine", "Subnautica2");
+            return _uharaSN2Tool;
+        }
+    }
+
+    private Subnautica2ScriptApi _uharaSN2Api;
+    private Subnautica2ScriptApi uharaSN2Api
+    {
+        get
+        {
+            if (_uharaSN2Api == null) _uharaSN2Api = new Subnautica2ScriptApi(this);
+            return _uharaSN2Api;
+        }
+    }
+
     public Main()
     {
         try
         {
             Thread.Sleep(50);
-            TSaves2.Register("rumii", "uhara" + LIB_VERSION);
+            TSaves2.Register("rumii", "uhara10");
             UniqueScriptLoadID = TUtils.GenerateRandomString(32);
             TSaves2.Set(UniqueScriptLoadID, "IDs", "UniqueScriptLoadID");
 
@@ -131,6 +151,8 @@ public partial class Main
 
             // ---
             Vars.Uhara = this;
+            Vars.UharaSN2 = uharaSN2Api;
+            Vars.uharaSN2 = uharaSN2Api;
             Vars.Resolver = new PtrResolver();
 
             // ---
@@ -166,6 +188,89 @@ public partial class Main
         try
         {
             return Disassemble(bytes, IntPtr.Zero);
+        }
+        catch { }
+        return null;
+    }
+
+    public void CraftRecipeFlag(string watcherName, string recipeName)
+    {
+        try
+        {
+            uharaSN2Tool.CraftRecipeFlag(watcherName, recipeName);
+        }
+        catch { }
+    }
+
+    public sealed class Subnautica2ScriptApi
+    {
+        private readonly Main owner;
+
+        public Subnautica2ScriptApi(Main owner)
+        {
+            this.owner = owner;
+        }
+
+        public void CraftRecipeFlag(string watcherName, string recipeName)
+        {
+            owner.CraftRecipeFlag(watcherName, recipeName);
+        }
+
+        public void CraftRecipeFlag(string watcherName, string className, string objectName, string functionName, string recipeName)
+        {
+            owner.CraftRecipeFlag(watcherName, className, objectName, functionName, recipeName);
+        }
+
+        public bool CraftRecipeFlag(string watcherName)
+        {
+            return owner.CraftRecipeFlag(watcherName);
+        }
+
+        public string CurrentCraftRecipeName(string watcherName)
+        {
+            return owner.CurrentCraftRecipeName(watcherName);
+        }
+
+        public string LastCraftRecipeName(string watcherName)
+        {
+            return owner.LastCraftRecipeName(watcherName);
+        }
+    }
+
+    public void CraftRecipeFlag(string watcherName, string className, string objectName, string functionName, string recipeName)
+    {
+        try
+        {
+            uharaSN2Tool.CraftRecipeFlag(watcherName, className, objectName, functionName, recipeName);
+        }
+        catch { }
+    }
+
+    public bool CraftRecipeFlag(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.CraftRecipeFlag(watcherName);
+        }
+        catch { }
+        return false;
+    }
+
+    public string CurrentCraftRecipeName(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.CurrentCraftRecipeName(watcherName);
+        }
+        catch { }
+        return null;
+    }
+
+    public string LastCraftRecipeName(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.LastCraftRecipeName(watcherName);
         }
         catch { }
         return null;
@@ -958,6 +1063,11 @@ public partial class Main
                     if (ToolsShared.ToolNames.UnrealEngine.Default.Utilities.Data.Contains(tool))
                     {
                         return new Tools.UnrealEngine.Default.Utilities();
+                    }
+
+                    if (ToolsShared.ToolNames.UnrealEngine.Default.Subnautica2.Data.Contains(tool))
+                    {
+                        return new Tools.UnrealEngine.Subnautica2();
                     }
                 }
             }

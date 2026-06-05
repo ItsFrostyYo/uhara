@@ -13,6 +13,8 @@ public partial class Tools
             {
                 internal static string DebugClass = "Instance";
                 internal static string ToolUniqueID = "OlDIgZzLoZjiyHwu";
+                private static readonly object initLock = new object();
+                private static string initializedProcessToken;
 
                 private FunctionCall functionCall = new FunctionCall();
                 private InstanceCreation instanceCreation = new InstanceCreation();
@@ -119,7 +121,16 @@ public partial class Tools
                 public Events()
                 {
                     if (!Main.ReloadProcess()) throw new Exception();
-                    MemoryManager.ClearMemory(ToolUniqueID);
+                    string processToken = TProcess.GetToken(Main.ProcessInstance) ?? string.Empty;
+
+                    lock (initLock)
+                    {
+                        if (initializedProcessToken != processToken)
+                        {
+                            MemoryManager.ClearMemory(ToolUniqueID);
+                            initializedProcessToken = processToken;
+                        }
+                    }
                 }
             }
         }

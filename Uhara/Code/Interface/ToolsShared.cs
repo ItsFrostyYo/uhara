@@ -91,6 +91,11 @@ internal class ToolsShared
                 {
                     internal static readonly string[] Data = new string[] { "cutscenemanager" };
                 }
+
+                internal class Subnautica2
+                {
+                    internal static readonly string[] Data = new string[] { "subnautica2", "sn2" };
+                }
             }
         }
     }
