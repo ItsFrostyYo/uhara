@@ -1,5 +1,5 @@
 # Subnautica 2 uhara Extension
-My Addition is Currently in `/Uhara/Code/Tools/UnrealEngine/Subnautica2`
+My Main Addition is Currently in `/Uhara/Code/Tools/UnrealEngine/Subnautica2`
 This is built specifically for modifying uhara10 to be more useful for Subnautica 2, currently hooks for Crafting Events.
 
 
