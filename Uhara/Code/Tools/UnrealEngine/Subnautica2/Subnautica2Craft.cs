@@ -27,9 +27,6 @@ public partial class Tools
             private string craftHookClassName;
             private string craftHookObjectName;
             private string craftHookFunctionName;
-            private ulong craftEventCacheUpdateCounter = ulong.MaxValue;
-            private bool craftEventCacheTriggered;
-            private string craftEventCacheRecipeName;
 
             public void CraftRecipeFlag(string watcherName, string recipeName)
             {
@@ -73,7 +70,10 @@ public partial class Tools
                 try
                 {
                     if (!craftRecipeWatchers.TryGetValue(watcherName, out CraftRecipeWatcher watcher)) return false;
-                    if (!TryResolveCraftRecipeEvent(out string currentRecipeName)) return false;
+                    if (!resolver.CheckFlag(GlobalCraftFlagWatcherName)) return false;
+
+                    string currentRecipeName = ReadCraftRecipeName(watcher);
+                    if (string.IsNullOrWhiteSpace(currentRecipeName)) return false;
 
                     watcher.LastRecipeName = currentRecipeName;
                     return true;
@@ -323,40 +323,6 @@ public partial class Tools
                 }
                 catch { }
                 return null;
-            }
-
-            private bool TryResolveCraftRecipeEvent(out string recipeName)
-            {
-                try
-                {
-                    ulong currentUpdateCounter = Main.UpdateCounter;
-                    if (craftEventCacheUpdateCounter != currentUpdateCounter)
-                    {
-                        craftEventCacheUpdateCounter = currentUpdateCounter;
-                        craftEventCacheTriggered = false;
-                        craftEventCacheRecipeName = null;
-
-                        if (!resolver.CheckFlag(GlobalCraftFlagWatcherName))
-                        {
-                            recipeName = null;
-                            return false;
-                        }
-
-                        string resolvedRecipeName = ReadCraftRecipeName(null);
-                        if (!string.IsNullOrWhiteSpace(resolvedRecipeName))
-                        {
-                            craftEventCacheTriggered = true;
-                            craftEventCacheRecipeName = resolvedRecipeName;
-                        }
-                    }
-
-                    recipeName = craftEventCacheRecipeName;
-                    return craftEventCacheTriggered;
-                }
-                catch { }
-
-                recipeName = null;
-                return false;
             }
 
             private void EnsureCraftHookInitialized(string className, string objectName, string functionName)
