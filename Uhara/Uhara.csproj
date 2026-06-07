@@ -119,6 +119,7 @@
     <Compile Include="Code\Tools\UnrealEngine\UnrealEngine.cs" />
     <Compile Include="Code\Tools\UnrealEngine\Subnautica2\Subnautica2.cs" />
     <Compile Include="Code\Tools\UnrealEngine\Subnautica2\Subnautica2Craft.cs" />
+    <Compile Include="Code\Tools\UnrealEngine\Subnautica2\Subnautica2Unlock.cs" />
     <Compile Include="Code\Utils\Array.cs" />
     <Compile Include="Code\Utils\DynamicVars.cs" />
     <Compile Include="Code\Utils\Imports.cs" />

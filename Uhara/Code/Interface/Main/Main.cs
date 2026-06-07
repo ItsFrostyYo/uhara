@@ -216,6 +216,11 @@ public partial class Main
             owner.CraftRecipeFlag(watcherName, recipeName);
         }
 
+        public void UnlockFlag(string watcherName, string unlockName)
+        {
+            owner.UnlockFlag(watcherName, unlockName);
+        }
+
         public void CraftRecipeFlag(string watcherName, string className, string objectName, string functionName, string recipeName)
         {
             owner.CraftRecipeFlag(watcherName, className, objectName, functionName, recipeName);
@@ -234,6 +239,56 @@ public partial class Main
         public string LastCraftRecipeName(string watcherName)
         {
             return owner.LastCraftRecipeName(watcherName);
+        }
+
+        public bool UnlockFlag(string watcherName)
+        {
+            return owner.UnlockFlag(watcherName);
+        }
+
+        public string CurrentUnlockName(string watcherName)
+        {
+            return owner.CurrentUnlockName(watcherName);
+        }
+
+        public string LastUnlockName(string watcherName)
+        {
+            return owner.LastUnlockName(watcherName);
+        }
+
+        public string LastUnlockKind(string watcherName)
+        {
+            return owner.LastUnlockKind(watcherName);
+        }
+
+        public bool BlueprintUnlockEvent()
+        {
+            return owner.BlueprintUnlockEvent();
+        }
+
+        public bool DatabankUnlockEvent()
+        {
+            return owner.DatabankUnlockEvent();
+        }
+
+        public bool StoryUnlockEvent()
+        {
+            return owner.StoryUnlockEvent();
+        }
+
+        public string CurrentBlueprintUnlockNames()
+        {
+            return owner.CurrentBlueprintUnlockNames();
+        }
+
+        public string CurrentDatabankUnlockNames()
+        {
+            return owner.CurrentDatabankUnlockNames();
+        }
+
+        public string CurrentStoryUnlockNames()
+        {
+            return owner.CurrentStoryUnlockNames();
         }
     }
 
@@ -271,6 +326,115 @@ public partial class Main
         try
         {
             return uharaSN2Tool.LastCraftRecipeName(watcherName);
+        }
+        catch { }
+        return null;
+    }
+
+    public void UnlockFlag(string watcherName, string unlockName)
+    {
+        try
+        {
+            uharaSN2Tool.UnlockFlag(watcherName, unlockName);
+        }
+        catch { }
+    }
+
+    public bool UnlockFlag(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.UnlockFlag(watcherName);
+        }
+        catch { }
+        return false;
+    }
+
+    public string CurrentUnlockName(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.CurrentUnlockName(watcherName);
+        }
+        catch { }
+        return null;
+    }
+
+    public string LastUnlockName(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.LastUnlockName(watcherName);
+        }
+        catch { }
+        return null;
+    }
+
+    public string LastUnlockKind(string watcherName)
+    {
+        try
+        {
+            return uharaSN2Tool.LastUnlockKind(watcherName);
+        }
+        catch { }
+        return null;
+    }
+
+    public bool BlueprintUnlockEvent()
+    {
+        try
+        {
+            return uharaSN2Tool.BlueprintUnlockEvent();
+        }
+        catch { }
+        return false;
+    }
+
+    public bool DatabankUnlockEvent()
+    {
+        try
+        {
+            return uharaSN2Tool.DatabankUnlockEvent();
+        }
+        catch { }
+        return false;
+    }
+
+    public bool StoryUnlockEvent()
+    {
+        try
+        {
+            return uharaSN2Tool.StoryUnlockEvent();
+        }
+        catch { }
+        return false;
+    }
+
+    public string CurrentBlueprintUnlockNames()
+    {
+        try
+        {
+            return uharaSN2Tool.CurrentBlueprintUnlockNames();
+        }
+        catch { }
+        return null;
+    }
+
+    public string CurrentDatabankUnlockNames()
+    {
+        try
+        {
+            return uharaSN2Tool.CurrentDatabankUnlockNames();
+        }
+        catch { }
+        return null;
+    }
+
+    public string CurrentStoryUnlockNames()
+    {
+        try
+        {
+            return uharaSN2Tool.CurrentStoryUnlockNames();
         }
         catch { }
         return null;

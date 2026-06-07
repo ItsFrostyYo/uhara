@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public partial class Tools
 {
@@ -64,6 +65,93 @@ public partial class Tools
                 }
                 catch { }
                 return IntPtr.Zero;
+            }
+
+            private static int ReadInt32(object value, int offset)
+            {
+                ulong address = ToAddress(value);
+                if (address == 0) return 0;
+
+                try
+                {
+                    return TMemory.ReadMemory<int>(Main.ProcessInstance, address + (ulong)offset);
+                }
+                catch { }
+                return 0;
+            }
+
+            private static bool ReadBool(object value, int offset)
+            {
+                ulong address = ToAddress(value);
+                if (address == 0) return false;
+
+                try
+                {
+                    return TMemory.ReadMemory<byte>(Main.ProcessInstance, address + (ulong)offset) != 0;
+                }
+                catch { }
+                return false;
+            }
+
+            private IntPtr[] ReadUnrealPointerArray(object value, int offset)
+            {
+                try
+                {
+                    ulong address = ToAddress(value);
+                    if (address == 0) return Array.Empty<IntPtr>();
+
+                    ulong dataAddress = TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + (ulong)offset);
+                    int count = TMemory.ReadMemory<int>(Main.ProcessInstance, address + (ulong)offset + 0x8);
+                    if (dataAddress == 0 || count <= 0 || count > 4096) return Array.Empty<IntPtr>();
+
+                    List<IntPtr> result = new List<IntPtr>(count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        ulong item = TMemory.ReadMemory<ulong>(Main.ProcessInstance, dataAddress + ((ulong)i * 0x8));
+                        if (item != 0) result.Add((IntPtr)item);
+                    }
+
+                    return result.ToArray();
+                }
+                catch { }
+                return Array.Empty<IntPtr>();
+            }
+
+            private string ReadPrimaryAssetName(object value, int offset)
+            {
+                try
+                {
+                    Default.Utilities utilities = GetUtilitiesTool();
+                    if (utilities == null) return null;
+
+                    ulong address = ToAddress(value);
+                    if (address == 0) return null;
+
+                    ulong primaryAssetName = TMemory.ReadMemory<ulong>(Main.ProcessInstance, address + (ulong)offset + 0x8);
+                    return utilities.FNameToShortString(primaryAssetName);
+                }
+                catch { }
+                return null;
+            }
+
+            private string JoinNames(IEnumerable<string> names)
+            {
+                try
+                {
+                    if (names == null) return null;
+
+                    List<string> clean = new List<string>();
+                    foreach (string name in names)
+                    {
+                        if (string.IsNullOrWhiteSpace(name)) continue;
+                        clean.Add(name.Trim());
+                    }
+
+                    if (clean.Count == 0) return null;
+                    return string.Join("|", clean);
+                }
+                catch { }
+                return null;
             }
 
             private static string HiddenWatcherName(string watcherName, string suffix)
