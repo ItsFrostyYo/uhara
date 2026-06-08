@@ -290,10 +290,10 @@ public partial class Tools
             {
                 try
                 {
-                    string recipeName = RecipeNameFromRecipeViewModel(RecipeViewModelFromFabricatorScreen(fabricatorScreen));
+                    string recipeName = RecipeNameFromFabricatorViewModel(FabricatorViewModelFromScreen(fabricatorScreen));
                     if (!string.IsNullOrWhiteSpace(recipeName)) return recipeName;
 
-                    return RecipeNameFromFabricatorViewModel(FabricatorViewModelFromScreen(fabricatorScreen));
+                    return RecipeNameFromRecipeViewModel(RecipeViewModelFromFabricatorScreen(fabricatorScreen));
                 }
                 catch { }
                 return null;

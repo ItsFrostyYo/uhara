@@ -96,6 +96,33 @@ public partial class Tools
                 catch { }
             }
 
+            public void ResetUnlockState()
+            {
+                try
+                {
+                    seenBlueprintUnlocks.Clear();
+                    seenDatabankUnlocks.Clear();
+                    seenStoryUnlockKeys.Clear();
+                    databankEventCounts.Clear();
+
+                    cachedBlueprintUnlockResults = new List<UnlockEventRecord>();
+                    cachedDatabankUnlockResults = new List<UnlockEventRecord>();
+                    cachedStoryUnlockResults = new List<UnlockEventRecord>();
+
+                    cachedBlueprintEventCounter = 0;
+                    cachedDatabankEventCounter = 0;
+                    cachedStoryEventCounter = 0;
+
+                    foreach (UnlockWatcher watcher in unlockWatchers.Values)
+                    {
+                        if (watcher == null) continue;
+                        watcher.LastUnlockName = null;
+                        watcher.LastUnlockKind = null;
+                    }
+                }
+                catch { }
+            }
+
             public bool UnlockFlag(string watcherName)
             {
                 try
