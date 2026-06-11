@@ -10,16 +10,20 @@ public partial class Tools
             private Default.Events fallbackEventsTool;
             private Default.Utilities fallbackUtilities;
             private readonly PtrResolver resolver;
+            private string attachedProcessToken;
 
             public Subnautica2()
             {
                 if (!Main.ReloadProcess()) throw new Exception();
 
                 resolver = new PtrResolver();
+                attachedProcessToken = SafeGetToken();
             }
 
             private Default.Events GetEventsTool()
             {
+                EnsureProcessContext();
+
                 try
                 {
                     object existingTool = Main.Vars?.Events;
@@ -38,6 +42,8 @@ public partial class Tools
 
             private Default.Utilities GetUtilitiesTool()
             {
+                EnsureProcessContext();
+
                 try
                 {
                     object existingTool = Main.Vars?.Utils;
@@ -157,6 +163,58 @@ public partial class Tools
             private static string HiddenWatcherName(string watcherName, string suffix)
             {
                 return "_SN2_" + watcherName + "_" + suffix;
+            }
+
+            private void EnsureProcessContext()
+            {
+                try
+                {
+                    if (!Main.ReloadProcess()) return;
+
+                    string currentProcessToken = SafeGetToken();
+                    if (string.IsNullOrWhiteSpace(currentProcessToken)) return;
+
+                    if (string.Equals(attachedProcessToken, currentProcessToken, StringComparison.Ordinal)) return;
+
+                    attachedProcessToken = currentProcessToken;
+                    ResetProcessScopedState();
+                }
+                catch { }
+            }
+
+            private void ResetProcessScopedState()
+            {
+                try
+                {
+                    fallbackEventsTool = null;
+                    fallbackUtilities = null;
+
+                    craftHookInitialized = false;
+                    craftHookClassName = null;
+                    craftHookObjectName = null;
+                    craftHookFunctionName = null;
+                    foreach (CraftRecipeWatcher watcher in craftRecipeWatchers.Values)
+                    {
+                        if (watcher == null) continue;
+                        watcher.LastRecipeName = null;
+                    }
+
+                    blueprintHookInitialized = false;
+                    databankHookInitialized = false;
+                    storyHookInitialized = false;
+                    ResetUnlockState();
+                }
+                catch { }
+            }
+
+            private static string SafeGetToken()
+            {
+                try
+                {
+                    return Main.ProcessInstance == null ? null : TProcess.GetToken(Main.ProcessInstance);
+                }
+                catch { }
+                return null;
             }
 
             private static ulong ToAddress(object value)
