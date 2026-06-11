@@ -76,7 +76,12 @@ public partial class Main
                 if (bf_ProcessInstance != null && !bf_ProcessInstance.HasExited) break;
                 bf_ProcessInstance = null;
 
-                FieldInfo gameField = _script.GetType().GetField("_game", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynamic script = _script;
+                if (script == null) break;
+
+                FieldInfo gameField = script.GetType().GetField("_game", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (gameField == null) break;
+
                 Process gameInstance = (Process)(gameField?.GetValue(_script));
                 if (gameInstance == null) break;
 
@@ -98,23 +103,29 @@ public partial class Main
         }
     }
 
-    private static IDictionary<string, object> _current;
     internal static IDictionary<string, object> current
     {
         get
         {
-            if (_current == null) _current = _script.State?.Data;
-            return _current;
+            try
+            {
+                return _script?.State?.Data;
+            }
+            catch { }
+            return null;
         }
     }
 
-    private static IDictionary<string, object> _old;
     internal static IDictionary<string, object> old
     {
         get
         {
-            if (_old == null) _old = _script.OldState?.Data;
-            return _old;
+            try
+            {
+                return _script?.OldState?.Data;
+            }
+            catch { }
+            return null;
         }
     }
 
@@ -507,6 +518,8 @@ public partial class Main
     {
         try
         {
+            dynamic previousScript = bf_script;
+
             TimerForm timerForm = null;
             foreach (Form form in Application.OpenForms)
             {
@@ -519,6 +532,7 @@ public partial class Main
             if (timerForm == null) return;
 
             bf_script = null;
+            _settings = null;
             CurrentState = timerForm.CurrentState;
 
             if (CurrentState?.Run?.AutoSplitter != null && CurrentState.Run.AutoSplitter.IsActivated)
@@ -540,6 +554,11 @@ public partial class Main
                 }
             }
 
+            if (!ReferenceEquals(previousScript, bf_script))
+            {
+                bf_ProcessInstance = null;
+            }
+
             if (bf_script != null)
             {
                 Vars = bf_script.Vars;
@@ -547,6 +566,10 @@ public partial class Main
                 FieldInfo settingsField = bf_script.GetType().GetField("_settings", BindingFlags.NonPublic | BindingFlags.Instance);
                 var settingsRaw = settingsField?.GetValue(bf_script);
                 _settings = settingsRaw;
+            }
+            else if (!ReferenceEquals(previousScript, bf_script))
+            {
+                Vars = null;
             }
         }
         catch { }
